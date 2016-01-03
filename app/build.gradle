@@ -61,4 +61,7 @@ dependencies {
     //mvp
     compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
     compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
+
+    //ui
+    compile 'com.android.support:gridlayout-v7:23.1.1'
 }
