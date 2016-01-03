@@ -29,7 +29,7 @@ public class MainApplication extends Application {
         //initialize dagger stuff
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .storageModule(new StorageModule("CONSUMER_APP_PREFERENCES"))
+                .storageModule(new StorageModule("SENIOR_LAUNCHER_PREFERENCES"))
                 .build();
     }
 
