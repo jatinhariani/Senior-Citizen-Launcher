@@ -1,13 +1,11 @@
 package com.jatinhariani.seniorcitizenlauncher.launcher.ui;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -16,9 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.jatinhariani.seniorcitizenlauncher.MainApplication;
 import com.jatinhariani.seniorcitizenlauncher.R;
@@ -27,17 +24,14 @@ import com.jatinhariani.seniorcitizenlauncher.launcher.presenters.LauncherPresen
 import com.jatinhariani.seniorcitizenlauncher.launcher.views.LauncherView;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -49,16 +43,23 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     @Inject
     SharedPreferences sharedPreferences;
 
-    @Bind({R.id.btn_contact1})
+    @Bind({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
     List<Button> contactButton;
 
-    @Bind({R.id.ll_contact1})
-    List<LinearLayout> contactLayout;
+    @Bind({R.id.fl_contact1, R.id.fl_contact2, R.id.fl_contact3, R.id.fl_contact4, R.id.fl_contact5, R.id.fl_contact6})
+    List<FrameLayout> contactLayout;
+
+    @Bind({R.id.iv_contact1, R.id.iv_contact2, R.id.iv_contact3, R.id.iv_contact4, R.id.iv_contact5, R.id.iv_contact6})
+    List<ImageView> contactImage;
+
+
 
     public LauncherActivityFragment() {}
 
     Uri uriContact;
     String contactID;
+
+    int currentLayout;
 
     @Override
     public LauncherPresenter createPresenter() {
@@ -85,21 +86,60 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.btn_contact1, R.id.btn_contact2})
-    void onClickContactbutton(View v) {
-        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+    @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
+    void onClickContactButton(View v) {
         switch(v.getId()) {
             case R.id.btn_contact1:
-                Log.d("test", "1");
+                currentLayout = 0;
                 break;
             case R.id.btn_contact2:
-                Log.d("test", "2");
+                currentLayout = 1;
+                break;
+            case R.id.btn_contact3:
+                currentLayout = 2;
+                break;
+            case R.id.btn_contact4:
+                currentLayout = 3;
+                break;
+            case R.id.btn_contact5:
+                currentLayout = 4;
+                break;
+            case R.id.btn_contact6:
+                currentLayout = 5;
                 break;
             default:
                 Log.d("test", "default");
         }
+    }
+
+    @OnLongClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
+    boolean onLongClickContactButton(View v) {
+        switch(v.getId()) {
+            case R.id.btn_contact1:
+                currentLayout = 0;
+                break;
+            case R.id.btn_contact2:
+                currentLayout = 1;
+                break;
+            case R.id.btn_contact3:
+                currentLayout = 2;
+                break;
+            case R.id.btn_contact4:
+                currentLayout = 3;
+                break;
+            case R.id.btn_contact5:
+                currentLayout = 4;
+                break;
+            case R.id.btn_contact6:
+                currentLayout = 5;
+                break;
+            default:
+                Log.d("test", "default");
+        }
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+        return true;
     }
 
     @Override
@@ -110,8 +150,8 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                     uriContact = data.getData();
                     retrieveContactName();
                     retrieveContactNumber();
-                    retrieveContactPhoto();
-                    break;
+                    Uri my_contact_Uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactID));
+                    Picasso.with(getActivity()).load(my_contact_Uri).into(contactImage.get(currentLayout));
                 default:
                     break;
             }
@@ -120,28 +160,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
             // gracefully handle failure
             Log.w("test", "Warning: activity result not ok");
         }
-    }
-
-    private void retrieveContactPhoto() {
-
-        Bitmap photo = null;
-
-        try {
-            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getActivity().getContentResolver(),
-                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactID)));
-
-            if (inputStream != null) {
-//                ImageView imageView = (ImageView) findViewById(R.id.img_contact);
-//                imageView.setImageBitmap(photo);
-                contactLayout.get(0).setBackground(new BitmapDrawable(getActivity().getResources(), inputStream));
-                assert inputStream != null;
-                inputStream.close();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void retrieveContactNumber() {
@@ -198,6 +216,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         }
 
         cursor.close();
+        contactButton.get(currentLayout).setText(contactName);
 
         Log.d("test", "Contact Name: " + contactName);
 
