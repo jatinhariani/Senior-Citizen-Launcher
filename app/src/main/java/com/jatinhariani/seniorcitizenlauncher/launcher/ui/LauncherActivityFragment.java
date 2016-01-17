@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,12 +53,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     @Bind({R.id.iv_contact1, R.id.iv_contact2, R.id.iv_contact3, R.id.iv_contact4, R.id.iv_contact5, R.id.iv_contact6})
     List<ImageView> contactImage;
 
-
-
     public LauncherActivityFragment() {}
-
-    Uri uriContact;
-    String contactID;
 
     int currentLayout;
 
@@ -85,7 +78,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_CONTACTS);
             }
-
         }
     }
 
@@ -101,6 +93,12 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onStart() {
+        getPresenter().displayStoredContacts();
+        super.onStart();
     }
 
     @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
@@ -125,7 +123,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 currentLayout = 5;
                 break;
             default:
-                Log.d("test", "default");
+                break;
         }
     }
 
@@ -151,7 +149,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 currentLayout = 5;
                 break;
             default:
-                Log.d("test", "default");
+                break;
         }
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
@@ -172,7 +170,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
         } else {
             // gracefully handle failure
-            Log.w("test", "Warning: activity result not ok");
         }
     }
 
@@ -192,44 +189,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         }
     }
 
-    private void retrieveContactNumber() {
-
-        String contactNumber = null;
-
-        // getting contacts ID
-        Cursor cursorID = getActivity().getContentResolver().query(uriContact,
-                new String[]{ContactsContract.Contacts._ID},
-                null, null, null);
-
-        if (cursorID.moveToFirst()) {
-
-            contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
-        }
-
-        cursorID.close();
-
-        Log.d("test", "Contact ID: " + contactID);
-
-        // Using the contact ID now we will get contact phone number
-        Cursor cursorPhone = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? AND " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
-
-                new String[]{contactID},
-                null);
-
-        if (cursorPhone.moveToFirst()) {
-            contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        }
-
-        cursorPhone.close();
-
-        Log.d("test", "Contact Phone Number: " + contactNumber);
-    }
-
     @Override
     public void setContactName(int position, String name) {
         contactButton.get(position).setText(name);
@@ -237,6 +196,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public void setContactImage(int position, Uri contactUri) {
-        Picasso.with(getActivity()).load(contactUri).into(contactImage.get(currentLayout));
+        Picasso.with(getActivity()).load(contactUri).into(contactImage.get(position));
     }
 }
