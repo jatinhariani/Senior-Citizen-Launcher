@@ -1,5 +1,7 @@
 package com.jatinhariani.seniorcitizenlauncher.launcher.presenters;
 
+import android.content.SharedPreferences;
+
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.jatinhariani.seniorcitizenlauncher.launcher.views.LauncherView;
@@ -8,4 +10,10 @@ import com.jatinhariani.seniorcitizenlauncher.launcher.views.LauncherView;
  * Created by jatin on 03/01/16.
  */
 public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
+
+    SharedPreferences sharedPreferences;
+
+    public LauncherPresenter(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+    }
 }
