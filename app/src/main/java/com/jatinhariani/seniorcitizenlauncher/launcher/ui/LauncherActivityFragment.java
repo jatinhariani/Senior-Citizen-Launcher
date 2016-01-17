@@ -1,14 +1,15 @@
 package com.jatinhariani.seniorcitizenlauncher.launcher.ui;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import butterknife.OnLongClick;
 public class LauncherActivityFragment extends BaseFragment<LauncherView, LauncherPresenter> implements LauncherView{
 
     private static final int CONTACT_PICKER_RESULT = 1001;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1002;
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -63,13 +65,27 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public LauncherPresenter createPresenter() {
-        return new LauncherPresenter();
+        return new LauncherPresenter(sharedPreferences);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MainApplication) getActivity().getApplication()).getAppComponent().inject(this);
+
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.READ_CONTACTS)) {
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+
+        }
     }
 
     @Override
@@ -159,6 +175,26 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         } else {
             // gracefully handle failure
             Log.w("test", "Warning: activity result not ok");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //todo: nothing to do here.
+                } else {
+                    //todo: show warning modal.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
