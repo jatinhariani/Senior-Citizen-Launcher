@@ -8,7 +8,7 @@ import android.net.Uri;
 public class StoredContact {
 
     private String name;
-    private Uri photoUri;
+    private Uri contactUri;
     private String phoneNumber;
 
     public String getName() {
@@ -19,12 +19,12 @@ public class StoredContact {
         this.name = name;
     }
 
-    public Uri getPhotoUri() {
-        return photoUri;
+    public Uri getContactUri() {
+        return contactUri;
     }
 
-    public void setPhotoUri(Uri photoUri) {
-        this.photoUri = photoUri;
+    public void setContactUri(Uri contactUri) {
+        this.contactUri = contactUri;
     }
 
     public String getPhoneNumber() {
