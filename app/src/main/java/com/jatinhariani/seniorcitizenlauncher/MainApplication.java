@@ -8,6 +8,7 @@ import com.jatinhariani.seniorcitizenlauncher.core.components.AppComponent;
 import com.jatinhariani.seniorcitizenlauncher.core.components.DaggerAppComponent;
 import com.jatinhariani.seniorcitizenlauncher.core.modules.AppModule;
 import com.jatinhariani.seniorcitizenlauncher.core.modules.StorageModule;
+import com.tramsun.libs.prefcompat.Pref;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -31,6 +32,8 @@ public class MainApplication extends Application {
                 .appModule(new AppModule(this))
                 .storageModule(new StorageModule("SENIOR_LAUNCHER_PREFERENCES"))
                 .build();
+
+        Pref.init(this);
     }
 
     public AppComponent getAppComponent() {

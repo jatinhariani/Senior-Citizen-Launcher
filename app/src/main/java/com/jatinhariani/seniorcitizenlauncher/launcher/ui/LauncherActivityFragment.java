@@ -65,7 +65,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public LauncherPresenter createPresenter() {
-        return new LauncherPresenter(sharedPreferences);
+        return new LauncherPresenter();
     }
 
     @Override
@@ -255,6 +255,16 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         contactButton.get(currentLayout).setText(contactName);
 
         Log.d("test", "Contact Name: " + contactName);
+
+    }
+
+    @Override
+    public void setContactName(String name) {
+
+    }
+
+    @Override
+    public void setContactImage(Uri pictureUri) {
 
     }
 }

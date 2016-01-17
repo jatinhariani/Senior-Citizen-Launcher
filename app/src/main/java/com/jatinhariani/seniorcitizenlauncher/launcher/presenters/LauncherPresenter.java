@@ -11,9 +11,10 @@ import com.jatinhariani.seniorcitizenlauncher.launcher.views.LauncherView;
  */
 public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
 
-    SharedPreferences sharedPreferences;
+    public LauncherPresenter() {
+    }
 
-    public LauncherPresenter(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
+    public void saveContact() {
+//        sharedPreferences.edit().putOb
     }
 }
