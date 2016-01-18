@@ -30,8 +30,9 @@
             android:id="@+id/btn_contact1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
@@ -55,8 +56,9 @@
             android:id="@+id/btn_contact2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
@@ -80,8 +82,9 @@
             android:id="@+id/btn_contact3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
@@ -105,8 +108,9 @@
             android:id="@+id/btn_contact4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
@@ -130,8 +134,9 @@
             android:id="@+id/btn_contact5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
@@ -155,8 +160,9 @@
             android:id="@+id/btn_contact6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:text="Long press to pick/replace a contact." />
+            android:text="Long press to pick/replace a contact."
+            style="@style/launcher_contact"
+            />
 
     </FrameLayout>
 
