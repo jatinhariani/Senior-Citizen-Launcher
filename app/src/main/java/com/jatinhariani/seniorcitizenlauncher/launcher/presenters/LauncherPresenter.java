@@ -113,6 +113,10 @@ public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
                 counter++;
             }
         }
+    }
 
+    //retrieves stored contact
+    public StoredContact getStoredPhoneNumber(int position) {
+        return storedContacts.get(position);
     }
 }
