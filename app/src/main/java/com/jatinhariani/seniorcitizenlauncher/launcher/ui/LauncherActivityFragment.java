@@ -122,6 +122,10 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
             default:
                 break;
         }
+        String uri = "tel:" + getPresenter().getStoredPhoneNumber(currentLayout).getPhoneNumber();
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse(uri));
+        startActivity(intent);
     }
 
     @OnLongClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
