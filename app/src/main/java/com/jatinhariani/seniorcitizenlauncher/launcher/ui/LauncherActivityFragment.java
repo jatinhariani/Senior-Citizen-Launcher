@@ -1,16 +1,15 @@
 package com.jatinhariani.seniorcitizenlauncher.launcher.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class LauncherActivityFragment extends BaseFragment<LauncherView, LauncherPresenter> implements LauncherView{
 
     private static final int CONTACT_PICKER_RESULT = 1001;
@@ -54,18 +50,13 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     @Bind({R.id.iv_contact1, R.id.iv_contact2, R.id.iv_contact3, R.id.iv_contact4, R.id.iv_contact5, R.id.iv_contact6})
     List<ImageView> contactImage;
 
-
-
     public LauncherActivityFragment() {}
-
-    Uri uriContact;
-    String contactID;
 
     int currentLayout;
 
     @Override
     public LauncherPresenter createPresenter() {
-        return new LauncherPresenter();
+        return new LauncherPresenter(getActivity());
     }
 
     @Override
@@ -84,7 +75,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_CONTACTS);
             }
-
         }
     }
 
@@ -100,6 +90,12 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onStart() {
+        getPresenter().displayStoredContacts();
+        super.onStart();
     }
 
     @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
@@ -124,7 +120,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 currentLayout = 5;
                 break;
             default:
-                Log.d("test", "default");
+                break;
         }
     }
 
@@ -150,7 +146,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 currentLayout = 5;
                 break;
             default:
-                Log.d("test", "default");
+                break;
         }
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
@@ -160,21 +156,17 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case CONTACT_PICKER_RESULT:
-                    uriContact = data.getData();
-                    retrieveContactName();
-                    retrieveContactNumber();
-                    Uri my_contact_Uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactID));
-                    Picasso.with(getActivity()).load(my_contact_Uri).into(contactImage.get(currentLayout));
+                    getPresenter().getContact(currentLayout, data.getData());
+                    break;
                 default:
                     break;
             }
 
         } else {
             // gracefully handle failure
-            Log.w("test", "Warning: activity result not ok");
         }
     }
 
@@ -190,81 +182,17 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 } else {
                     //todo: show warning modal.
                 }
-                return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
-    }
-
-    private void retrieveContactNumber() {
-
-        String contactNumber = null;
-
-        // getting contacts ID
-        Cursor cursorID = getActivity().getContentResolver().query(uriContact,
-                new String[]{ContactsContract.Contacts._ID},
-                null, null, null);
-
-        if (cursorID.moveToFirst()) {
-
-            contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
-        }
-
-        cursorID.close();
-
-        Log.d("test", "Contact ID: " + contactID);
-
-        // Using the contact ID now we will get contact phone number
-        Cursor cursorPhone = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? AND " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
-
-                new String[]{contactID},
-                null);
-
-        if (cursorPhone.moveToFirst()) {
-            contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        }
-
-        cursorPhone.close();
-
-        Log.d("test", "Contact Phone Number: " + contactNumber);
-    }
-
-    private void retrieveContactName() {
-
-        String contactName = null;
-
-        // querying contact data store
-        Cursor cursor = getActivity().getContentResolver().query(uriContact, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-
-            // DISPLAY_NAME = The display name for the contact.
-            // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
-
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-        }
-
-        cursor.close();
-        contactButton.get(currentLayout).setText(contactName);
-
-        Log.d("test", "Contact Name: " + contactName);
-
     }
 
     @Override
-    public void setContactName(String name) {
-
+    public void setContactName(int position, String name) {
+        contactButton.get(position).setText(name);
     }
 
     @Override
-    public void setContactImage(Uri pictureUri) {
-
+    public void setContactImage(int position, Uri contactUri) {
+        Picasso.with(getActivity()).load(contactUri).into(contactImage.get(position));
     }
 }

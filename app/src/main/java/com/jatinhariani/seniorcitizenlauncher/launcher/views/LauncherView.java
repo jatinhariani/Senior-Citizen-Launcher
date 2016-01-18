@@ -9,7 +9,7 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  */
 public interface LauncherView extends MvpView {
 
-    void setContactName(String name);
-    void setContactImage(Uri pictureUri);
+    void setContactName(int position, String name);
+    void setContactImage(int position, Uri pictureUri);
 
 }
