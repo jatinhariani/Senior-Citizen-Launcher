@@ -14,4 +14,21 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="launcher_button">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">21dp</item>
+
+    </style>
+
+    <style name="launcher_button.green" parent="launcher_button">
+        <item name="android:background">@android:color/holo_green_dark</item>
+    </style>
+
+    <style name="launcher_button.red" parent="launcher_button">
+        <item name="android:background">@android:color/holo_red_dark</item>
+    </style>
+
 </resources>
