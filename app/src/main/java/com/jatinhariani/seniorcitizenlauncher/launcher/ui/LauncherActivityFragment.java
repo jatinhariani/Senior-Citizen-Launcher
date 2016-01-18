@@ -40,7 +40,7 @@ import butterknife.OnLongClick;
 public class LauncherActivityFragment extends BaseFragment<LauncherView, LauncherPresenter> implements LauncherView{
 
     private static final int CONTACT_PICKER_RESULT = 1001;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1002;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     @Inject
     SharedPreferences sharedPreferences;
