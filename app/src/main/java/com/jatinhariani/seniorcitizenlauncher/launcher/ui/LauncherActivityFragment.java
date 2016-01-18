@@ -33,9 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class LauncherActivityFragment extends BaseFragment<LauncherView, LauncherPresenter> implements LauncherView{
 
     private static final int CONTACT_PICKER_RESULT = 1001;

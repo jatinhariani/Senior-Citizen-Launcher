@@ -12,9 +12,6 @@ import com.tramsun.libs.prefcompat.Pref;
 
 import java.util.ArrayList;
 
-/**
- * Created by jatin on 03/01/16.
- */
 public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
 
     Activity mActivity;
@@ -34,7 +31,13 @@ public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
         storedContact.setContactID(retreiveContactID(uriContact));
         storedContact.setPhoneNumber(retrieveContactNumber(storedContact.getContactID()));
 
-        storedContacts.set(position, storedContact);
+        if(storedContacts.size() > position) {
+            //thing already exists.
+            storedContacts.set(position, storedContact);
+        }
+        else {
+            storedContacts.add(storedContact);
+        }
 
         Pref.putObject("storedContacts", storedContacts);
 
