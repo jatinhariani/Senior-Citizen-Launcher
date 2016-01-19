@@ -11,5 +11,6 @@ public interface LauncherView extends MvpView {
 
     void setContactName(int position, String name);
     void setContactImage(int position, Uri pictureUri);
+    void setContactStyle(int position);
 
 }

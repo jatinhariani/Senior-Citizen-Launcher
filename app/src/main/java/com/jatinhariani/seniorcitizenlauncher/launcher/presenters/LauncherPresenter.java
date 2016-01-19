@@ -44,6 +44,7 @@ public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
         if(isViewAttached()) {
             getView().setContactImage(position, uriContact);
             getView().setContactName(position, storedContact.getName());
+            getView().setContactStyle(position);
         }
     }
 
@@ -110,6 +111,7 @@ public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
             for(StoredContact storedContact : storedContacts) {
                 getView().setContactName(counter, storedContact.getName());
                 getView().setContactImage(counter, storedContact.getContactUri());
+                getView().setContactStyle(counter);
                 counter++;
             }
         }

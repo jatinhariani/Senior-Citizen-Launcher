@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -202,7 +203,22 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public void setContactImage(int position, Uri contactUri) {
-        Log.d("test", "aaa" +  Picasso.with(getActivity()).load(contactUri).toString());
         Picasso.with(getActivity()).load(contactUri).into(contactImage.get(position));
+    }
+
+    @Override
+    public void setContactStyle(int position) {
+
+        //TODO: @Neha needs to figure if there is a better way to just apply a previously defined style
+
+        contactButton.get(position).setTextColor(getResources().getColor(android.R.color.white));
+        contactButton.get(position).setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        contactButton.get(position).setAllCaps(false);
+        contactButton.get(position).setGravity(Gravity.LEFT | Gravity.BOTTOM);
+
+        int padding = (int) getResources().getDimension(R.dimen.contact_padding);
+        contactButton.get(position).setPadding(padding, padding, padding, padding);
+
+        contactButton.get(position).setBackgroundResource(R.drawable.gradient_background);
     }
 }
