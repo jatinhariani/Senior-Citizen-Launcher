@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,8 +99,9 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         super.onStart();
     }
 
-    @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
+    @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6, R.id.btn_call})
     void onClickContactButton(View v) {
+        Intent intent;
         switch(v.getId()) {
             case R.id.btn_contact1:
                 currentLayout = 0;
@@ -120,10 +122,13 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 currentLayout = 5;
                 break;
             default:
-                break;
+                intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:"));
+                startActivity(intent);
+                return;
         }
         String uri = "tel:" + getPresenter().getStoredPhoneNumber(currentLayout).getPhoneNumber();
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(uri));
         startActivity(intent);
     }
@@ -197,6 +202,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     @Override
     public void setContactImage(int position, Uri contactUri) {
+        Log.d("test", "aaa" +  Picasso.with(getActivity()).load(contactUri).toString());
         Picasso.with(getActivity()).load(contactUri).into(contactImage.get(position));
     }
 }
