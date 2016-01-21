@@ -121,4 +121,8 @@ public class LauncherPresenter extends MvpBasePresenter<LauncherView> {
     public StoredContact getStoredPhoneNumber(int position) {
         return storedContacts.get(position);
     }
+
+    public ArrayList<StoredContact> getStoredContacts() {
+        return storedContacts;
+    }
 }

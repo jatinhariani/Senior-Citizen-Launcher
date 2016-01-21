@@ -2,6 +2,8 @@ package com.jatinhariani.seniorcitizenlauncher.launcher.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -128,10 +131,37 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 startActivity(intent);
                 return;
         }
-        String uri = "tel:" + getPresenter().getStoredPhoneNumber(currentLayout).getPhoneNumber();
-        intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(Uri.parse(uri));
-        startActivity(intent);
+
+        //Check if the particular position is not empty
+        if(getPresenter().getStoredContacts().size() > 0
+                && getPresenter().getStoredContacts().size() > currentLayout
+                && !getPresenter().getStoredPhoneNumber(currentLayout).getPhoneNumber().equals("")) {
+
+            String uri = "tel:" + getPresenter().getStoredPhoneNumber(currentLayout).getPhoneNumber();
+            intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+            alertDialog.setMessage("Please long press to select a contact.");
+
+            alertDialog.setCancelable(true);
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            alertDialog.show();
+
+            Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setTextColor(getResources().getColor(android.R.color.black));
+
+        }
+
+
     }
 
     @OnLongClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
