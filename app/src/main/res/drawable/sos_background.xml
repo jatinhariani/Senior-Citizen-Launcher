@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/holo_red_dark"/>
 
-
-    <item android:drawable="@android:color/holo_red_dark" />
     <item
         android:width="60dp"
         android:height="60dp"
         android:gravity="center"
         >
         <bitmap
+            android:src="@drawable/ic_warning_white_48dp"
+            android:gravity="center"
+            android:tint="@android:color/white"
             android:alpha="1"
-            android:gravity="center|fill_horizontal|fill_vertical"
-            android:src="@android:drawable/ic_dialog_alert"
-            android:tint="@android:color/white" />
+            />
     </item>
 
 </layer-list>
