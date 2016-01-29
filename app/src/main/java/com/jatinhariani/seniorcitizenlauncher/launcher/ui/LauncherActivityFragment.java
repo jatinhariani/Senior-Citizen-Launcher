@@ -10,25 +10,26 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.jatinhariani.seniorcitizenlauncher.MainApplication;
 import com.jatinhariani.seniorcitizenlauncher.R;
 import com.jatinhariani.seniorcitizenlauncher.core.ui.BaseFragment;
+import com.jatinhariani.seniorcitizenlauncher.launcher.models.StoredContact;
 import com.jatinhariani.seniorcitizenlauncher.launcher.presenters.LauncherPresenter;
 import com.jatinhariani.seniorcitizenlauncher.launcher.views.LauncherView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,9 +50,6 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
     @Bind({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6})
     List<Button> contactButton;
 
-    @Bind({R.id.fl_contact1, R.id.fl_contact2, R.id.fl_contact3, R.id.fl_contact4, R.id.fl_contact5, R.id.fl_contact6})
-    List<FrameLayout> contactLayout;
-
     @Bind({R.id.iv_contact1, R.id.iv_contact2, R.id.iv_contact3, R.id.iv_contact4, R.id.iv_contact5, R.id.iv_contact6})
     List<ImageView> contactImage;
 
@@ -59,6 +57,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
 
     int currentLayout;
 
+    @NonNull
     @Override
     public LauncherPresenter createPresenter() {
         return new LauncherPresenter(getActivity());
@@ -73,9 +72,8 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.READ_CONTACTS)) {
-            } else {
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -103,7 +101,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
         super.onStart();
     }
 
-    @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6, R.id.btn_call})
+    @OnClick({R.id.btn_contact1, R.id.btn_contact2, R.id.btn_contact3, R.id.btn_contact4, R.id.btn_contact5, R.id.btn_contact6, R.id.btn_call, R.id.btn_sos})
     void onClickContactButton(View v) {
         Intent intent;
         switch(v.getId()) {
@@ -125,6 +123,12 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
             case R.id.btn_contact6:
                 currentLayout = 5;
                 break;
+            case R.id.btn_sos:
+                ArrayList<StoredContact> storedContacts = getPresenter().getStoredContacts();
+                SOSConfirmFragment dialogFragment = new SOSConfirmFragment();
+                dialogFragment.setStoredContacts(storedContacts);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), "SOSConfirmFragment");
+                return;
             default:
                 intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:"));
@@ -157,6 +161,7 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
             alertDialog.show();
 
             Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            //todo: dont use deprecated methods.
             button.setTextColor(getResources().getColor(android.R.color.black));
 
         }
@@ -205,14 +210,12 @@ public class LauncherActivityFragment extends BaseFragment<LauncherView, Launche
                     break;
             }
 
-        } else {
-            // gracefully handle failure
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
                 // If request is cancelled, the result arrays are empty.
